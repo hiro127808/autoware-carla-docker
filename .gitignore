@@ -5,3 +5,4 @@ common/autoware_data/ml_models/lidar_centerpoint/
 common/autoware_data/ml_models/traffic_light_classifier/
 common/autoware_data/ml_models/traffic_light_fine_detector/
 common/autoware_data/maps/
+!common/autoware_data/maps//.gitkeep
