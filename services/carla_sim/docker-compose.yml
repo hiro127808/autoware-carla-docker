@@ -1,0 +1,27 @@
+# version: "3.9"
+
+services:
+  s_carla_sim:
+    extends:
+      file: ../../common/base.yml
+      service: b_common_base
+    container_name: c_carla_sim
+    image: i_carla_sim:latest
+    devices:
+      - /dev/snd:/dev/snd
+    group_add:
+      - audio
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: 
+      - "sleep"
+      - "infinity"
+
+    cpuset: "0-3"
+    shm_size: "2g"
+    deploy:
+      resources:
+        limits:
+          cpus: '16'
+          memory: 28g

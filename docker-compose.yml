@@ -1,0 +1,16 @@
+# version: "3.9"
+
+services:
+  s_autoware:
+    extends:
+      file: ./services/autoware/docker-compose.yml
+      service: s_autoware
+    privileged: true
+    depends_on:
+      s_carla_sim:
+        condition: service_started
+
+  s_carla_sim:
+    extends:
+      file: ./services/carla_sim/docker-compose.yml
+      service: s_carla_sim

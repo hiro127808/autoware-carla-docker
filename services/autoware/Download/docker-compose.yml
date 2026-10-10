@@ -1,0 +1,15 @@
+# version: "3.9"
+
+services:
+  s_autoware_download:
+    extends:
+      file: ../../../common/base.yml
+      service: b_common_base
+    build:
+      context: .
+      dockerfile: Dockerfile
+    privileged: true
+    tty: true
+    volumes:
+      - ../../../common/autoware_data/ml_models_origin:/tmp/ml_models_origin:rw
+

@@ -1,0 +1,36 @@
+# version: "3.9"
+
+services:
+  b_common_base:
+    privileged: true
+    tty: true
+    ipc: host
+    network_mode: host
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - capabilities: ["gpu"]
+              driver: nvidia
+              count: all
+    volumes:
+      - ./shared:/shared:rw
+      - /etc/localtime:/etc/localtime:ro
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+      - ~/.Xauthority:/tmp/.Xauthority:ro
+    environment:
+      - DISPLAY=${DISPLAY:-:0}
+      - XAUTHORITY=/tmp/.Xauthority
+      - QT_X11_NO_MITSHM=1
+      - XDG_RUNTIME_DIR=/tmp/.cache
+      - CARLA_HOST=${CARLA_HOST:-127.0.0.1}
+      - CARLA_PORT=${CARLA_PORT:-2000}
+      - ROS_DOMAIN_ID=${ROS_DOMAIN_ID:-0}
+      - RMW_IMPLEMENTATION=${RMW_IMPLEMENTATION}
+      - RMW_FASTRTPS_USE_QOS_FROM_XML=${RMW_FASTRTPS_USE_QOS_FROM_XML}
+      - FASTRTPS_DEFAULT_PROFILES_FILE=${FASTRTPS_DEFAULT_PROFILES_FILE}
+      - ROS_AUTOMATIC_DISCOVERY_RANGE=${ROS_AUTOMATIC_DISCOVERY_RANGE:-SUBNET}
+      - MALLOC_TRIM_THRESHOLD_=${MALLOC_TRIM_THRESHOLD_:-65536}
+      - MALLOC_MMAP_THRESHOLD_=${MALLOC_MMAP_THRESHOLD_:-65536}
+      - CYCLONEDDS_URI=${CYCLONEDDS_URI}
+
