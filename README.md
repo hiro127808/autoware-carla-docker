@@ -22,8 +22,8 @@
 
 | コンポーネント | バージョン / イメージ | 備考 |
 | :--- | :--- | :--- |
-| **Autoware** | `universe-devel-cuda-jazzy-20260929` <br> (`ghcr.io/autowarefoundation/autoware`) | CUDA対応 / ROS 2 Jazzyベース |
-| **CARLA Simulator** | `0.9.16` <br> (`carlasim/carla`) | 高精度シミュレーター |
+| **Autoware** | `universe-devel-cuda-jazzy-20260929`    (`ghcr.io/autowarefoundation/autoware`) | CUDA対応 / ROS 2 Jazzyベース |
+| **CARLA Simulator** | `0.9.16`    (`carlasim/carla`) | 高精度シミュレーター |
 | **GPU / 依存環境** | NVIDIA GPU (CUDA対応) | コンテナ内GPUアクセラレーション必須 |
 
 ---
@@ -34,7 +34,7 @@
 
 * **本リポジトリのコード**: [MIT License](./LICENSE)
 * **Autoware**: [Apache License 2.0](https://github.com/autowarefoundation/autoware/blob/main/LICENSE)
-* **CARLA Simulator**: [MIT License](https://github.com/carla-simulator/carla/blob/master/LICENSE) 
+* **CARLA Simulator**: [MIT License](https://github.com/carla-simulator/carla/blob/master/LICENSE)
 
 ---
 
@@ -56,7 +56,6 @@
 * **🚗 クイックスタート対応**: Docker Compose（または起動スクリプト）を用意しており、クローン後すぐに各種ノードおよびシミュレーションを起動・検証できます。
 
 ---
-
 
 ## 動作環境
 
@@ -80,7 +79,7 @@
 
 ## セットアップ
 
-### リポジトリをクローンします。
+### クローン
 
   ```bash
   git clone [https://github.com/hiro127808/autoware-carla-docker.git](https://github.com/hiro127808/autoware-carla-docker.git)
@@ -162,7 +161,6 @@ autowareの状態は以下のパネルから確認出来ます。
 センサ類に問題なければ、Localizationがinitializedになります。
 ![autowareパネル](./common/images/00_01_autowareStatePanel.png)
 
-
 * **表示初期化** :
 初期画面では、自車両を追従していないため、表示を初期化します。
 ![表示初期化](./common/images/01_select_view.png)
@@ -170,7 +168,6 @@ autowareの状態は以下のパネルから確認出来ます。
 viewsパネルを操作し、自車両を表示します。
 Zeroボタンで初期化が可能です。
 ![自車両表示](./common/images/01_01_viewPanel.png)
-
 
 * **ゴール設定** :
 画面中央上にある、"2D Goal Pose"によりゴールを設定します。
@@ -204,24 +201,22 @@ autoware起動オプションは同ファイルに記載しています。
 
 * **ダミー歩行者、自動車** : common/shared/autoware/spawn_dummy.py
 
-
 * **手動制御自動車**  : common/shared/autoware/rival_control.py
 
 * **緊急停止強制初期化** : common/shared/autoware/clear_external_emergency_stop.sh
 
 * **実行例** :
-dockerの設定により、以下のディレクトリを共有にしています。
-ホスト側: common/shared
-コンテナ側: /shared
-また、コンテナシェルの初期位置を、以下のディレクトリとしています。
+dockerの設定により、以下のディレクトリを共有にしています。  
+ホスト側: common/shared  
+コンテナ側: /shared  
+また、コンテナシェルの初期位置を、以下のディレクトリとしています。  
 /shared/autoware
 
-  実行例: 
+  実行例:  
+
   ```bash
   python3 pawn_dummy.py
   ```
-
-
 
 ### 参考情報
 
