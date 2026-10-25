@@ -12,4 +12,4 @@ services:
     tty: true
     volumes:
       - ../../../common/autoware_data/ml_models:/tmp/ml_models:rw
-
+      - ../../../common/autoware_data/maps:/tmp/maps:rw
