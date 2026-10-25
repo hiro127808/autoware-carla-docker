@@ -1,4 +1,4 @@
 #!/bin/bash
 set -e
-cd services/autoware/Download
+cd services/Download
 docker compose up --build

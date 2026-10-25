@@ -3,7 +3,7 @@
 services:
   s_autoware_download:
     extends:
-      file: ../../../common/base.yml
+      file: ../../common/base.yml
       service: b_common_base
     build:
       context: .
@@ -11,5 +11,5 @@ services:
     privileged: true
     tty: true
     volumes:
-      - ../../../common/autoware_data/ml_models:/tmp/ml_models:rw
-      - ../../../common/autoware_data/maps:/tmp/maps:rw
+      - ../../common/autoware_data/ml_models:/tmp/ml_models:rw
+      - ../../common/autoware_data/maps:/tmp/maps:rw
