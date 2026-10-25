@@ -5,6 +5,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 # 1. 基礎ツールのインストール（python3-ansible を使えばapt一発で確実に入ります）
 RUN apt-get update && apt-get install -y \
     git \
+    git-lfs \
     curl \
     sudo \
     python3-pip \

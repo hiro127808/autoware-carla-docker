@@ -22,3 +22,8 @@ cat << 'EOF' > "$MAP_DIR"/map_projector_info.yaml
 projector_type: Local
 EOF
 
+cd "$ML_DEST"
+
+git lfs install
+LIDAR_URL="https://huggingface.co/AutowareFoundation/lidar_centerpoint"
+git clone "$LIDAR_URL" -b v3.0
