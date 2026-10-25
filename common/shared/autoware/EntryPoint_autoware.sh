@@ -16,7 +16,7 @@ for i in range(1, max_attempts + 1):
     try:
         client = carla.Client('localhost', 2000)
         client.set_timeout(2.0)
-        world = client.get_world()
+        world = client.load_world('Town01')
         print(f'\nConnected successfully on attempt {i}! Current map: {world.get_map().name}')
         break
     except Exception as e:
