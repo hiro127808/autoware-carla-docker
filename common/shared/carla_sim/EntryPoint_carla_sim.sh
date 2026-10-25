@@ -5,7 +5,7 @@ set -e
     -prefernvidia \
     -carla-rpc-port=${CARLA_PORT:-2000} \
     -quality-level=Low \
-    -fixed-step-seconds=0.1 \
+    -fixed-step-seconds=0.05 \
     -RenderOffscreen \
     -nosound
     # -ResX=320 \
