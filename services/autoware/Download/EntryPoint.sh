@@ -11,12 +11,13 @@ ansible-playbook ansible/playbooks/install_dev_env.yaml \
 cp -r "$ML_ORIGIN/traffic_light_classifier" "$ML_DEST/"
 cp -r "$ML_ORIGIN/traffic_light_fine_detector" "$ML_DEST/"
 
-CARLA_URL="https://bitbucket.org/carla-simulator/autoware-contents/raw/master/maps"
+CARLA_MAP_URL="https://bitbucket.org/carla-simulator/autoware-contents.git"
 MAP_DIR="/tmp/maps/Town01"
 
+git clone "$CARLA_MAP_URL"
 mkdir -p "$MAP_DIR"
-curl -o "$MAP_DIR/pointcloud_map.pcd" "$CARLA_URL"/point_cloud_maps/Town01.pcd
-curl -o "$MAP_DIR"/lanelet2_map.pcd "$CARLA_URL"/vector_maps/lanelet2/Town01.osm
+cp ./autoware-contents/maps/point_cloud_maps/Town01.pcd "$MAP_DIR/pointcloud_map.pcd"
+cp ./autoware-contents/maps/vector_maps/lanelet2/Town01.osm "$MAP_DIR/lanelet2_map.osm"
 
 cat << 'EOF' > "$MAP_DIR"/map_projector_info.yaml
 projector_type: Local
