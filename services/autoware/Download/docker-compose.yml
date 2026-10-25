@@ -11,5 +11,5 @@ services:
     privileged: true
     tty: true
     volumes:
-      - ../../../common/autoware_data/ml_models_origin:/tmp/ml_models_origin:rw
+      - ../../../common/autoware_data/ml_models:/tmp/ml_models:rw
 
