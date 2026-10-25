@@ -18,3 +18,7 @@ mkdir -p "$MAP_DIR"
 curl -o "$MAP_DIR/pointcloud_map.pcd" "$CARLA_URL"/point_cloud_maps/Town01.pcd
 curl -o "$MAP_DIR"/lanelet2_map.pcd "$CARLA_URL"/vector_maps/lanelet2/Town01.osm
 
+cat << 'EOF' > "$MAP_DIR"/map_projector_info.yaml
+projector_type: Local
+EOF
+
