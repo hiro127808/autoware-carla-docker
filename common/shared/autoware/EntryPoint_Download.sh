@@ -4,9 +4,6 @@ MAP_DEST="/root/autoware_data/maps"
 ML_DEST="/root/autoware_data/ml_models"
 
 WORKDIR="/tmp/autoware_setup"
-if [ -d "$WORKDIR" ]; then
-    rm -rf "$WORKDIR"
-fi
 mkdir -p "$WORKDIR"
 cd "$WORKDIR"
 
@@ -25,11 +22,11 @@ else
     ansible-galaxy collection install -f -r ansible-galaxy-requirements.yaml
     ansible-playbook ansible/playbooks/install_dev_env.yaml \
         --tags universe \
-        --skip-tags nvidia,cuda \
+        --skip-tags nvidia,cuda,acados \
         -e data_dir="$ML_ORIGIN"
+    cp -r "$ML_ORIGIN/traffic_light_classifier" "$ML_DEST/"
+    cp -r "$ML_ORIGIN/traffic_light_fine_detector" "$ML_DEST/"
 fi
-cp -r "$ML_ORIGIN/traffic_light_classifier" "$ML_DEST/"
-cp -r "$ML_ORIGIN/traffic_light_fine_detector" "$ML_DEST/"
 cd "$ML_DEST"
 if [ -d "lidar_centerpoint/.git" ]; then
     echo "lidar_centerpoint repository already exists. Skipping clone."
@@ -44,28 +41,28 @@ if [ -d "autoware-contents/.git" ]; then
     echo "autoware-contents repository already exists. Skipping clone."
 else
     git clone https://bitbucket.org/carla-simulator/autoware-contents.git
+    cd "$WORKDIR"/autoware-contents/maps/point_cloud_maps
+    for file in *; do
+        if [ -d "$file" ] || [ "$file" = "README.md" ]; then
+            continue
+        fi
+        filename_no_ext="${file%.*}"
+        TOWN_DIR="${MAP_DEST}/${filename_no_ext}"
+        if [ -d "${TOWN_DIR}" ]; then
+            rm -rf "${TOWN_DIR}"
+        fi
+        mkdir -p "${TOWN_DIR}"
+        cp "$file" "${TOWN_DIR}/pointcloud_map.pcd"
+        cp "$INFO_YAML_PATH" "${TOWN_DIR}/${INFO_YAML_NAME}"
+    done
+    cd "$WORKDIR"/autoware-contents/maps/vector_maps/lanelet2
+    for file in *; do
+        if [ -d "$file" ]; then
+            continue
+        fi
+        filename_no_ext="${file%.*}"
+        TOWN_DIR="${MAP_DEST}/${filename_no_ext}"
+        cp "$file" "${TOWN_DIR}/lanelet2_map.osm"
+    done
 fi
 
-cd "$WORKDIR"/autoware-contents/maps/point_cloud_maps
-for file in *; do
-    if [ -d "$file" ] || [ "$file" = "README.md" ]; then
-        continue
-    fi
-    filename_no_ext="${file%.*}"
-    TOWN_DIR="${MAP_DEST}/${filename_no_ext}"
-    if [ -d "${TOWN_DIR}" ]; then
-        rm -rf "${TOWN_DIR}"
-    fi
-    mkdir -p "${TOWN_DIR}"
-    cp "$file" "${TOWN_DIR}/pointcloud_map.pcd"
-    cp "$INFO_YAML_PATH" "${TOWN_DIR}/${INFO_YAML_NAME}"
-done
-cd "$WORKDIR"/autoware-contents/maps/vector_maps/lanelet2
-for file in *; do
-    if [ -d "$file" ]; then
-        continue
-    fi
-    filename_no_ext="${file%.*}"
-    TOWN_DIR="${MAP_DEST}/${filename_no_ext}"
-    cp "$file" "${TOWN_DIR}/lanelet2_map.osm"
-done
