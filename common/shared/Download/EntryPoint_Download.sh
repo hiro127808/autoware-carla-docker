@@ -29,6 +29,14 @@ else
 fi
 cp -r "$ML_ORIGIN/traffic_light_classifier" "$ML_DEST/"
 cp -r "$ML_ORIGIN/traffic_light_fine_detector" "$ML_DEST/"
+cd "$ML_DEST"
+if [ -d "lidar_centerpoint/.git" ]; then
+    echo "lidar_centerpoint repository already exists. Skipping clone."
+else
+    git lfs install
+    LIDAR_URL="https://huggingface.co/AutowareFoundation/lidar_centerpoint"
+    git clone "$LIDAR_URL" -b v3.0
+fi
 
 cd "$WORKDIR"
 if [ -d "autoware-contents/.git" ]; then
@@ -60,12 +68,3 @@ for file in *; do
     TOWN_DIR=/tmp/maps/"$filename_no_ext"
     cp "$file" "$TOWN_DIR/lanelet2_map.osm"
 done
-
-cd "$ML_DEST"
-if [ -d "lidar_centerpoint/.git" ]; then
-    echo "lidar_centerpoint repository already exists. Skipping clone."
-else
-    git lfs install
-    LIDAR_URL="https://huggingface.co/AutowareFoundation/lidar_centerpoint"
-    git clone "$LIDAR_URL" -b v3.0
-fi
