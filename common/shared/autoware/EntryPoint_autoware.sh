@@ -14,11 +14,11 @@ CARLA_PORT=2000
 python3 -c "
 import carla, time
 
-print(f'starting CARLA client to connect to server at "${CARLA_SERVER}":"${CARLA_PORT}" and load world "${TOWN_NAME}"...\n')
+print(f'\n starting CARLA client to connect to server at "${CARLA_SERVER}":"${CARLA_PORT}" and load world "${TOWN_NAME}"...')
 max_attempts = 2048
 for i in range(1, max_attempts + 1):
     try:
-        print(f'\nConnecting ...')
+        print(f'\n Connecting ...')
         client = carla.Client('${CARLA_SERVER}', ${CARLA_PORT})
         client.set_timeout(10.0)
         world = client.load_world('${TOWN_NAME}')
@@ -42,6 +42,6 @@ ros2 launch autoware_launch e2e_simulator.launch.xml \
     vehicle_model:=sample_vehicle \
     sensor_model:=carla_sensor_kit \
     simulator_type:=carla \
-    use_sim_time:=True \
+    use_sim_time:=true \
     2>&1 \
     | tee /shared/autoware/autoware_launch.log.txt
