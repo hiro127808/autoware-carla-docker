@@ -1,7 +1,9 @@
 #!/bin/bash
 set -e
+MAP_DEST="/root/autoware_data/maps"
+ML_DEST="/root/autoware_data/ml_models"
 
-WORKDIR="/tmp/workspace"
+WORKDIR="/tmp/autoware_setup"
 if [ -d "$WORKDIR" ]; then
     rm -rf "$WORKDIR"
 fi
@@ -15,7 +17,6 @@ EOF
 INFO_YAML_PATH="$WORKDIR"/$INFO_YAML_NAME
 
 ML_ORIGIN="/tmp/ml_models_origin"
-ML_DEST="/tmp/ml_models"
 if [ -d "autoware/.git" ]; then
     echo "autoware repository already exists. Skipping clone."
 else
@@ -44,20 +45,20 @@ if [ -d "autoware-contents/.git" ]; then
 else
     git clone https://bitbucket.org/carla-simulator/autoware-contents.git
 fi
-cd "$WORKDIR"/autoware-contents/maps/point_cloud_maps
 
+cd "$WORKDIR"/autoware-contents/maps/point_cloud_maps
 for file in *; do
     if [ -d "$file" ] || [ "$file" = "README.md" ]; then
         continue
     fi
     filename_no_ext="${file%.*}"
-    TOWN_DIR=/tmp/maps/"$filename_no_ext"
-    if [ -d "$TOWN_DIR" ]; then
-        rm -rf "$TOWN_DIR"
+    TOWN_DIR="${MAP_DEST}/${filename_no_ext}"
+    if [ -d "${TOWN_DIR}" ]; then
+        rm -rf "${TOWN_DIR}"
     fi
-    mkdir -p "$TOWN_DIR"
-    cp "$file" "$TOWN_DIR/pointcloud_map.pcd"
-    cp "$INFO_YAML_PATH" "$TOWN_DIR"/"$INFO_YAML_NAME"
+    mkdir -p "${TOWN_DIR}"
+    cp "$file" "${TOWN_DIR}/pointcloud_map.pcd"
+    cp "$INFO_YAML_PATH" "${TOWN_DIR}/${INFO_YAML_NAME}"
 done
 cd "$WORKDIR"/autoware-contents/maps/vector_maps/lanelet2
 for file in *; do
@@ -65,6 +66,6 @@ for file in *; do
         continue
     fi
     filename_no_ext="${file%.*}"
-    TOWN_DIR=/tmp/maps/"$filename_no_ext"
-    cp "$file" "$TOWN_DIR/lanelet2_map.osm"
+    TOWN_DIR="${MAP_DEST}/${filename_no_ext}"
+    cp "$file" "${TOWN_DIR}/lanelet2_map.osm"
 done

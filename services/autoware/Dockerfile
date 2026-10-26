@@ -5,6 +5,12 @@ RUN apt-get update && apt-get install -y \
     python3-pip \
     python3-dev \
     ros-jazzy-rmw-cyclonedds-cpp \
+    git \
+    git-lfs \
+    curl \
+    sudo \
+    python3-pip \
+    ansible \
     && rm -rf /var/lib/apt/lists/*
 
 RUN python3 -m venv /opt/venv

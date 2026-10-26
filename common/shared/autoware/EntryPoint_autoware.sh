@@ -3,6 +3,9 @@
 source /opt/venv/bin/activate
 source /opt/ros/jazzy/setup.bash
 source /opt/autoware/setup.bash
+
+./EntryPoint_Download.sh
+
 # これはCUDAのエラー箇所を正確に特定するためのデバッグ用設定ですが、
 # GPUの処理を同期（同期待ち）させるため、動作が非常に重くなり、
 # 処理落ちやフリーズの大きな原因になります。

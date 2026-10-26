@@ -11,7 +11,6 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    # Autoware 推奨の追加環境変数
     environment:
       - NVIDIA_VISIBLE_DEVICES=all
       - NVIDIA_DRIVER_CAPABILITIES=all
@@ -24,18 +23,7 @@ services:
       - CUTILS_LOGGING_SEVERITY=DEBUG
       - CUDA_LAUNCH_BLOCKING=1
 
-    # Autoware のデータをホストと共有
     volumes:
       - ../../common/autoware_data:/root/autoware_data:rw
 
-    # Autoware 起動（例：AWSIM 連携）
     command: ["bash"]
-    # command: >
-    #   bash -c "
-    #     source /opt/ros/jazzy/setup.bash &&
-    #     source /opt/autoware/setup.bash &&
-    #     ros2 launch autoware_launch e2e_simulator.launch.xml
-    #       vehicle_model:=sample_vehicle
-    #       sensor_model:=awsim_sensor_kit
-    #       map_path:=/home/aw/autoware_data/maps/Shinjuku-Map/map
-    #   "
