@@ -1,8 +1,7 @@
 common/shared/autoware/autoware_launch.log.txt
 common/shared/PythonAPI/carla/agents/
-common/autoware_data/ml_models_origin/
-common/autoware_data/ml_models/lidar_centerpoint/
-common/autoware_data/ml_models/traffic_light_classifier/
-common/autoware_data/ml_models/traffic_light_fine_detector/
+common/autoware_data/ml_models/
 common/autoware_data/maps/
-!common/autoware_data/maps//.gitkeep
+
+!common/autoware_data/maps/.gitkeep
+!common/autoware_data/ml_models/.gitkeep
