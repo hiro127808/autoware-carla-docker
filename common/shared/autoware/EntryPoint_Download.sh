@@ -22,7 +22,7 @@ else
     ansible-galaxy collection install -f -r ansible-galaxy-requirements.yaml
     ansible-playbook ansible/playbooks/install_dev_env.yaml \
         --tags universe \
-        --skip-tags nvidia,cuda,acados \
+        --skip-tags nvidia,cuda,tensorrt,spconv,acados,qt5ct_setup,demo_artifacts \
         -e data_dir="$ML_ORIGIN"
     cp -r "$ML_ORIGIN/traffic_light_classifier" "$ML_DEST/"
     cp -r "$ML_ORIGIN/traffic_light_fine_detector" "$ML_DEST/"
