@@ -13,8 +13,11 @@ RUN apt-get update && apt-get install -y \
     ansible \
     && rm -rf /var/lib/apt/lists/*
 
-RUN python3 -m venv /opt/venv
+RUN python3 -m venv /opt/venv && \
+    chown -R 1000:1000 /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
+
+USER 1000
 
 RUN python3 -m pip install --upgrade pip setuptools wheel \
  && python3 -m pip install --no-cache-dir \
@@ -33,5 +36,4 @@ RUN echo "source /opt/venv/bin/activate" >> ~/.bashrc
 RUN echo "source /opt/ros/jazzy/setup.bash" >> ~/.bashrc
 RUN echo "source /opt/autoware/setup.bash" >> ~/.bashrc
 
-WORKDIR /shared/autoware
 ENTRYPOINT [ "/shared/autoware/EntryPoint_autoware.sh" ]
