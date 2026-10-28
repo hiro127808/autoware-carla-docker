@@ -1,9 +1,7 @@
 #!/bin/bash
 set -e
-MAP_DEST="/tmp/autoware_data/maps"
-ML_DEST="/tmp/autoware_data/ml_models"
-mkdir -p "$MAP_DEST"
-mkdir -p "$ML_DEST"
+MAP_DEST="/root/autoware_data/maps"
+ML_DEST="/root/autoware_data/ml_models"
 
 WORKDIR="/tmp/autoware_setup"
 mkdir -p "$WORKDIR"

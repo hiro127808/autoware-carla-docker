@@ -13,11 +13,8 @@ RUN apt-get update && apt-get install -y \
     ansible \
     && rm -rf /var/lib/apt/lists/*
 
-RUN python3 -m venv /opt/venv && \
-    chown -R 1000:1000 /opt/venv
+RUN python3 -m venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
-
-USER 1000
 
 RUN python3 -m pip install --upgrade pip setuptools wheel \
  && python3 -m pip install --no-cache-dir \
