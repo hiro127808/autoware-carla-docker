@@ -1,5 +1,8 @@
 #!/bin/bash
 set -e
+AUTOWARE_URL="https://github.com/autowarefoundation/autoware.git"
+LIDAR_URL="https://huggingface.co/AutowareFoundation/lidar_centerpoint"
+CONTENTS_URL="https://bitbucket.org/carla-simulator/autoware-contents.git"
 MAP_DEST="${AUTOWARE_DATA_PATH}/maps"
 ML_DEST="${AUTOWARE_DATA_PATH}/ml_models"
 ML_ORIGIN="/tmp/ml_models_origin"
@@ -7,8 +10,16 @@ WORKDIR="/tmp/autoware_setup"
 LIDAR_VERSION=v3.0
 ANSIBLE_TAGS="universe"
 ANSIBLE_SKIP_TAGS="nvidia,cuda,tensorrt,spconv,acados,qt5ct_setup,demo_artifacts"
-PCD_DIR="$WORKDIR"/autoware-contents/maps/point_cloud_maps
-OSM_DIR="$WORKDIR"/autoware-contents/maps/vector_maps/lanelet2
+CONTENTS_DIR="$WORKDIR"/autoware-contents
+PCD_DIR="$CONTENTS_DIR"/maps/point_cloud_maps
+OSM_DIR="$CONTENTS_DIR"/maps/vector_maps/lanelet2
+CP_EXTENSIONS="yaml onnx engine json txt"
+SRC_CLASSIFIER="$ML_ORIGIN/traffic_light_classifier"
+DST_CLASSIFIER="$ML_DEST/traffic_light_classifier"
+SRC_DETECTOR="$ML_ORIGIN/traffic_light_fine_detector"
+DST_DETECTOR="$ML_DEST/traffic_light_fine_detector"
+SRC_LIDAR="$WORKDIR/lidar_centerpoint"
+DST_LIDAR="$ML_DEST/lidar_centerpoint"
 mkdir -p "$ML_ORIGIN"
 mkdir -p "$WORKDIR"
 
@@ -22,7 +33,7 @@ INFO_YAML_PATH="$WORKDIR"/$INFO_YAML_NAME
 if [ ! -d "$WORKDIR/autoware/.git" ]; then
     echo "autoware repository clone. & ansible-playbook."
     cd "$WORKDIR"
-    git clone https://github.com/autowarefoundation/autoware.git
+    git clone "$AUTOWARE_URL"
     cd "$WORKDIR/autoware"
     ansible-galaxy collection install -f -r ansible-galaxy-requirements.yaml
     ansible-playbook ansible/playbooks/install_dev_env.yaml \
@@ -32,35 +43,35 @@ if [ ! -d "$WORKDIR/autoware/.git" ]; then
 else
     echo "autoware repository already exists. Skipping clone. & ansible-playbook."
 fi
-if [ ! -d "$ML_DEST/traffic_light_classifier" ]; then
-    echo "cp traffic_light_classifier to $ML_DEST"
-    cp -r "$ML_ORIGIN/traffic_light_classifier" "$ML_DEST/"
+if [ ! -d "$DST_CLASSIFIER" ]; then
+    mkdir -p "$DST_CLASSIFIER"
+    for ext in $CP_EXTENSIONS; do
+        cp "$SRC_CLASSIFIER"/*."$ext" "$DST_CLASSIFIER"/
+    done
 fi
-if [ ! -d "$ML_DEST/traffic_light_fine_detector" ]; then
-    echo "cp traffic_light_fine_detector to $ML_DEST"
-    cp -r "$ML_ORIGIN/traffic_light_fine_detector" "$ML_DEST/"
+if [ ! -d "$DST_DETECTOR" ]; then
+    mkdir -p "$DST_DETECTOR"
+    for ext in $CP_EXTENSIONS; do
+        cp "$SRC_DETECTOR"/*."$ext" "$DST_DETECTOR"/
+    done
 fi
 
 if [ ! -d "$WORKDIR/lidar_centerpoint/.git" ]; then
-    echo "lidar_centerpoint repository clone. $LIDAR_VERSION"
-    LIDAR_URL="https://huggingface.co/AutowareFoundation/lidar_centerpoint"
     cd "$WORKDIR"
-    git clone "$LIDAR_URL" -b $LIDAR_VERSION "$WORKDIR/lidar_centerpoint"
+    git clone "$LIDAR_URL" -b $LIDAR_VERSION "$SRC_LIDAR"
 else
     echo "lidar_centerpoint repository already exists. Skipping clone."
 fi
-if [ ! -d "$ML_DEST/lidar_centerpoint/" ]; then
-    echo "cp lidar_centerpoint models to $ML_DEST"
-    mkdir -p "$ML_DEST/lidar_centerpoint"
-    cp "$WORKDIR/lidar_centerpoint/"*.yaml "$ML_DEST/lidar_centerpoint/"
-    cp "$WORKDIR/lidar_centerpoint/"*.onnx "$ML_DEST/lidar_centerpoint/"
-    cp "$WORKDIR/lidar_centerpoint/"*.engine "$ML_DEST/lidar_centerpoint/"
-    cp "$WORKDIR/lidar_centerpoint/"*.json "$ML_DEST/lidar_centerpoint/"
+if [ ! -d "$DST_LIDAR" ]; then
+    mkdir -p "$DST_LIDAR"
+    for ext in $CP_EXTENSIONS; do
+        cp "$SRC_LIDAR"/*."$ext" "$DST_LIDAR"/
+    done
 fi
 if [ ! -d "$WORKDIR/autoware-contents/.git" ]; then
     echo "autoware-contents repository clone."
     cd "$WORKDIR"
-    git clone https://bitbucket.org/carla-simulator/autoware-contents.git
+    git clone "$CONTENTS_URL"
 else
     echo "autoware-contents repository already exists. Skipping clone."
 fi
