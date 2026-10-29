@@ -87,9 +87,6 @@ if [ ! -d "$DST_LIDAR" ]; then
             fi
         done
     done
-    ros2 launch autoware_lidar_centerpoint lidar_centerpoint.launch.xml \
-    model_path:="$DST_LIDAR" \
-    build_only:=true
 fi
 
 if [ ! -d "$SRC_CONTENTS/.git" ]; then
