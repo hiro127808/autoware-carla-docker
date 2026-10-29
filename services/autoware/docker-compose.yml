@@ -11,9 +11,6 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-      args:
-        - UID=${HOST_UID}
-        - GID=${HOST_GID}
     environment:
       - NVIDIA_VISIBLE_DEVICES=all
       - NVIDIA_DRIVER_CAPABILITIES=all
@@ -23,6 +20,8 @@ services:
       - LD_LIBRARY_PATH=/usr/local/cuda/lib64:/usr/lib/x86_64-linux-gnu:$LD_LIBRARY_PATH
       - CUTILS_LOGGING_SEVERITY=DEBUG
       - CUDA_LAUNCH_BLOCKING=1
-      - AUTOWARE_DATA_PATH=/tmp/autoware_data
+      - AUTOWARE_DATA_PATH=${AUTOWARE_DATA_PATH:-/tmp/autoware_data}
+      - HOST_UID=${HOST_UID:-1000}
+      - HOST_GID=${HOST_GID:-1000}
 
     command: ["bash"]
