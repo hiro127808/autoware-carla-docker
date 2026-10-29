@@ -89,51 +89,25 @@
 
 ## 初回環境構築
 
-プロジェクトを初めて実行する際は、Autowareの動作に必要な機械学習モデルのダウンロードと配置を行います。以下の手順を順番に実行してください。
+プロジェクトを初めて実行する際は、Autowareの動作に必要な機械学習モデルのダウンロードと配置を行います。
 
 ### 学習モデルの初期ダウンロード
 
-  `services/autoware/Download/` ディレクトリに移動し、Dockerを通じて初期データをダウンロードします。
-  これにより、`common/autoware_data/ml_models_origin` にモデルが展開されます。
+初期データをダウンロードします。
+これにより、`common/autoware_data/ml_models` にモデルが展開されます。
 
-  ```bash
-  cd services/autoware/Download/
-  docker compose up --build
-  ```
+* *配置先**: `common/autoware_data/ml_models`
+* **対象モデル**: `lidar_centerpoint`
+* **対象モデル**: `traffic_light_classifier`
+* **対象モデル**: `traffic_light_fine_detector`
+* **ダウンロード元**: [Autowarefoundation/autoware](https://github.com/autowarefoundation/autoware.git)
+* **ダウンロード元**: [AutowareFoundation/lidar_centerpoint (v3.0)](https://huggingface.co/AutowareFoundation/lidar_centerpoint/tree/v3.0)
 
-### 信号認識モデルの配置
+### マップファイルのダウンロード
 
-ダウンロードされた ml_models_origin 内から、必要なモデルを目的のディレクトリへ配置します。
-
-* **対象モデル1**: `traffic_light_classifier`
-* **対象モデル2**: `traffic_light_fine_detector`
-* **配置元**: `common/autoware_data/ml_models_origin`
-* **配置先**: `common/autoware_data/ml_models`
-
-### LiDAR Centerpoint モデルのダウンロード
-
-Hugging Faceから指定のモデルをダウンロードし、対応するディレクトリへ配置します。
-
-* **ダウンロード元**: [Hugging Face - AutowareFoundation/lidar_centerpoint (v3.0)](https://huggingface.co/AutowareFoundation/lidar_centerpoint/tree/v3.0)
-* **配置先**: `common/autoware_data/ml_models/lidar_centerpoint`
-
-### マップファイルのダウンロード、作成
-
-* **Town01 PCDファイル**: [Town01.pcd](https://bitbucket.org/carla-simulator/autoware-contents/src/master/maps/point_cloud_maps/Town01.pcd)
-* **Town01 OSMファイル**: [Town01.osm](https://bitbucket.org/carla-simulator/autoware-contents/src/master/maps/vector_maps/lanelet2/Town01.osm)
-* *配置先**: `common/autoware_data/maps/Town01`
-
-上記のファイルは、リネームすること。
-
-* **Town01.pcd**: pointcloud_map.pcd
-* **Town01.osm**: lanelet2_map.osm
-* **map_projector_info.yaml**: 以下の内容で作成する。
-
-  ```yaml
-  projector_type: Local
-  ```
-
-[参考URL](https://autowarefoundation.github.io/autoware_universe/main/simulator/autoware_carla_interface/)
+* *配置先**: `common/autoware_data/maps`
+* **ダウンロード元**: [carla-simulator/autoware-contents](https://bitbucket.org/carla-simulator/autoware-contents.git)
+* **参考**: [autoware_carla_interface](https://autowarefoundation.github.io/autoware_universe/main/simulator/autoware_carla_interface/)
 
 ---
 
@@ -153,13 +127,20 @@ Hugging Faceから指定のモデルをダウンロードし、対応するデ�
   docker compose up --build
   ```
 
+
 * **初期画面** :
 起動完了し、初期化が終了すると、以下の画面になります。
 ![初期画面](./common/images/00_init_screen.png)
 
+
+* **初期画面注意事項** :
 autowareの状態は以下のパネルから確認出来ます。
 センサ類に問題なければ、Localizationがinitializedになります。
 ![autowareパネル](./common/images/00_01_autowareStatePanel.png)
+
+* **初回起動時** :
+初回起動時は、Localizationがinitializedになるまで、かなりの時間を要します。
+各学習モデルが一時ファイルを生成するためです。
 
 * **表示初期化** :
 初期画面では、自車両を追従していないため、表示を初期化します。
