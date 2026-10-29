@@ -103,16 +103,17 @@ for file in *; do
     fi
     filename_no_ext="${file%.*}"
     TOWN_DIR="${MAP_DEST}/${filename_no_ext}"
-    if [ -d "${TOWN_DIR}" ]; then
-        rm -rf "${TOWN_DIR}"
+        if [ ! -d "${TOWN_DIR}" ]; then
+        echo "${TOWN_DIR} copying..."
+        mkdir -p "${TOWN_DIR}"
+        cp "$file" "${TOWN_DIR}/pointcloud_map.pcd"
+        cp "$INFO_YAML_PATH" "${TOWN_DIR}/${INFO_YAML_NAME}"
+        OSM_PATH="${OSM_DIR}/${filename_no_ext}.osm"
+        cp "$OSM_PATH" "${TOWN_DIR}/lanelet2_map.osm"
+        echo "${TOWN_DIR} copy done."
+    else
+        echo "${TOWN_DIR} already exists. Skipping copy."
     fi
-    echo "${TOWN_DIR} copying..."
-    mkdir -p "${TOWN_DIR}"
-    cp "$file" "${TOWN_DIR}/pointcloud_map.pcd"
-    cp "$INFO_YAML_PATH" "${TOWN_DIR}/${INFO_YAML_NAME}"
-    OSM_PATH="${OSM_DIR}/${filename_no_ext}.osm"
-    cp "$OSM_PATH" "${TOWN_DIR}/lanelet2_map.osm"
-    echo "${TOWN_DIR} copy done."
 done
 # aw is autoware user in the container.
 # This is to avoid permission issues when running Autoware in the container.
