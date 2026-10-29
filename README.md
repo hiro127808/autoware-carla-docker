@@ -93,10 +93,9 @@
 
 ### 学習モデルの初期ダウンロード
 
-初期データをダウンロードします。
-これにより、`common/autoware_data/ml_models` にモデルが展開されます。
+各ファイルが自動でダウンロードされます。
 
-* *配置先**: `common/autoware_data/ml_models`
+* **配置先**: `common/autoware_data/ml_models`
 * **対象モデル**: `lidar_centerpoint`
 * **対象モデル**: `traffic_light_classifier`
 * **対象モデル**: `traffic_light_fine_detector`
@@ -104,6 +103,8 @@
 * **ダウンロード元**: [AutowareFoundation/lidar_centerpoint (v3.0)](https://huggingface.co/AutowareFoundation/lidar_centerpoint/tree/v3.0)
 
 ### マップファイルのダウンロード
+
+各ファイルが自動でダウンロードされます。
 
 * *配置先**: `common/autoware_data/maps`
 * **ダウンロード元**: [carla-simulator/autoware-contents](https://bitbucket.org/carla-simulator/autoware-contents.git)
