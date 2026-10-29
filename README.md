@@ -82,7 +82,7 @@
 ### クローン
 
   ```bash
-  git clone [https://github.com/hiro127808/autoware-carla-docker.git](https://github.com/hiro127808/autoware-carla-docker.git)
+  git clone https://github.com/hiro127808/autoware-carla-docker.git
   ```
 
 ---
@@ -129,24 +129,24 @@
   ```
 
 * **初期画面** :
-起動完了し、初期化が終了すると、以下の画面になります。
+起動完了し、初期化が終了すると、以下の画面になります。  
 ![初期画面](./common/images/00_init_screen.png)
 
 * **初期画面注意事項** :
-autowareの状態は以下のパネルから確認出来ます。
-センサ類に問題なければ、Localizationがinitializedになります。
-![autowareパネル](./common/images/00_01_autowareStatePanel.png)
+autowareの状態は以下のパネルから確認出来ます。  
+センサ類に問題なければ、Localizationがinitializedになります。  
+![autowareパネル](./common/images/00_01_autowareStatePanel.png)  
 
 * **初回起動時** :
-初回起動時は、Localizationがinitializedになるまで、かなりの時間を要します。
-検証済みマシンで、約1時間程度。
-各学習モデルが一時ファイルを生成するためです。
+初回起動時は、Localizationがinitializedになるまで、かなりの時間を要します。  
+検証済みマシンで、約1時間程度。  
+各学習モデルが一時ファイルを生成するためです。  
 
 * **表示初期化** :
-初期画面では、自車両を追従していないため、表示を初期化します。
+初期画面では、自車両を追従していないため、表示を初期化します。  
 ![表示初期化](./common/images/01_select_view.png)
 
-viewsパネルを操作し、自車両を表示します。
+viewsパネルを操作し、自車両を表示します。  
 Zeroボタンで初期化が可能です。
 ![自車両表示](./common/images/01_01_viewPanel.png)
 
@@ -183,8 +183,6 @@ autoware起動オプションは同ファイルに記載しています。
 * **ダミー歩行者、自動車** : common/shared/autoware/spawn_dummy.py
 
 * **手動制御自動車**  : common/shared/autoware/rival_control.py
-
-* **緊急停止強制初期化** : common/shared/autoware/clear_external_emergency_stop.sh
 
 * **実行例** :
 dockerの設定により、以下のディレクトリを共有にしています。  
