@@ -21,9 +21,6 @@ services:
       - CUTILS_LOGGING_SEVERITY=DEBUG
       - CUDA_LAUNCH_BLOCKING=1
       - AUTOWARE_DATA_PATH=${AUTOWARE_DATA_PATH:-/root/autoware_data}
-      - HOST_UID=${HOST_UID:-1000}
-      - HOST_GID=${HOST_GID:-1000}
-
     volumes:
       - ../../common/autoware_data:${AUTOWARE_DATA_PATH:-/root/autoware_data}
     command: ["bash"]

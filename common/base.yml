@@ -21,8 +21,6 @@ services:
     environment:
       - DISPLAY=${DISPLAY:-:0}
       - XAUTHORITY=/tmp/.Xauthority
-      - HOST_UID=${HOST_UID:-1000}
-      - HOST_GID=${HOST_GID:-1000}
       - QT_X11_NO_MITSHM=1
       - XDG_RUNTIME_DIR=/tmp/.cache
       - CARLA_HOST=${CARLA_HOST:-127.0.0.1}

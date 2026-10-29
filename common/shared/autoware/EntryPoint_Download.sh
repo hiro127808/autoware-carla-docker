@@ -35,14 +35,10 @@ fi
 if [ ! -d "$ML_DEST/traffic_light_classifier" ]; then
     echo "cp traffic_light_classifier to $ML_DEST"
     cp -r "$ML_ORIGIN/traffic_light_classifier" "$ML_DEST/"
-    chown -R 1000:1000 "$ML_DEST/traffic_light_classifier"
-    chmod -R 777 "$ML_DEST/traffic_light_classifier"
 fi
 if [ ! -d "$ML_DEST/traffic_light_fine_detector" ]; then
     echo "cp traffic_light_fine_detector to $ML_DEST"
     cp -r "$ML_ORIGIN/traffic_light_fine_detector" "$ML_DEST/"
-    chown -R 1000:1000 "$ML_DEST/traffic_light_fine_detector"
-    chmod -R 777 "$ML_DEST/traffic_light_fine_detector"
 fi
 
 if [ ! -d "$WORKDIR/lidar_centerpoint/.git" ]; then
@@ -60,8 +56,6 @@ if [ ! -d "$ML_DEST/lidar_centerpoint/" ]; then
     cp "$WORKDIR/lidar_centerpoint/"*.onnx "$ML_DEST/lidar_centerpoint/"
     cp "$WORKDIR/lidar_centerpoint/"*.engine "$ML_DEST/lidar_centerpoint/"
     cp "$WORKDIR/lidar_centerpoint/"*.json "$ML_DEST/lidar_centerpoint/"
-    chown -R 1000:1000 "$ML_DEST/lidar_centerpoint"
-    chmod -R 777 "$ML_DEST/lidar_centerpoint"
 fi
 if [ ! -d "$WORKDIR/autoware-contents/.git" ]; then
     echo "autoware-contents repository clone."
@@ -86,7 +80,9 @@ for file in *; do
     cp "$INFO_YAML_PATH" "${TOWN_DIR}/${INFO_YAML_NAME}"
     OSM_PATH="${OSM_DIR}/${filename_no_ext}.osm"
     cp "$OSM_PATH" "${TOWN_DIR}/lanelet2_map.osm"
-    chown -R 1000:1000 "$TOWN_DIR"
-    chmod -R 777 "$TOWN_DIR"
     echo "${TOWN_DIR} copy done."
 done
+# aw is autoware user in the container.
+# This is to avoid permission issues when running Autoware in the container.
+chown -R aw:aw "${AUTOWARE_DATA_PATH}/."
+chmod -R 777 "${AUTOWARE_DATA_PATH}/."
