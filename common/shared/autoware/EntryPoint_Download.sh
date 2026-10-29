@@ -1,5 +1,9 @@
 #!/bin/bash
 set -e
+source /opt/venv/bin/activate
+source /opt/ros/jazzy/setup.bash
+source /opt/autoware/setup.bash
+
 AUTOWARE_URL="https://github.com/autowarefoundation/autoware.git"
 LIDAR_URL="https://huggingface.co/AutowareFoundation/lidar_centerpoint"
 CONTENTS_URL="https://bitbucket.org/carla-simulator/autoware-contents.git"
@@ -10,18 +14,17 @@ WORKDIR="/tmp/autoware_setup"
 LIDAR_VERSION=v3.0
 ANSIBLE_TAGS="universe"
 ANSIBLE_SKIP_TAGS="nvidia,cuda,tensorrt,spconv,acados,qt5ct_setup,demo_artifacts"
-CONTENTS_DIR="$WORKDIR"/autoware-contents
-PCD_DIR="$CONTENTS_DIR"/maps/point_cloud_maps
-OSM_DIR="$CONTENTS_DIR"/maps/vector_maps/lanelet2
+SRC_CONTENTS="$WORKDIR"/autoware-contents
+PCD_DIR="$SRC_CONTENTS"/maps/point_cloud_maps
+OSM_DIR="$SRC_CONTENTS"/maps/vector_maps/lanelet2
 CP_EXTENSIONS="yaml onnx engine json txt"
-SRC_CLASSIFIER="$ML_ORIGIN/traffic_light_classifier"
-DST_CLASSIFIER="$ML_DEST/traffic_light_classifier"
-SRC_DETECTOR="$ML_ORIGIN/traffic_light_fine_detector"
-DST_DETECTOR="$ML_DEST/traffic_light_fine_detector"
-SRC_LIDAR="$WORKDIR/lidar_centerpoint"
-DST_LIDAR="$ML_DEST/lidar_centerpoint"
-SRC_CONTENTS="$WORKDIR/autoware-contents"
-SRC_AUTOWARE="$WORKDIR/autoware"
+SRC_CLASSIFIER="$ML_ORIGIN"/traffic_light_classifier
+DST_CLASSIFIER="$ML_DEST"/traffic_light_classifier
+SRC_DETECTOR="$ML_ORIGIN"/traffic_light_fine_detector
+DST_DETECTOR="$ML_DEST"/traffic_light_fine_detector
+SRC_LIDAR="$WORKDIR"/lidar_centerpoint
+DST_LIDAR="$ML_DEST"/lidar_centerpoint
+SRC_AUTOWARE="$WORKDIR"/autoware
 mkdir -p "$ML_ORIGIN"
 mkdir -p "$WORKDIR"
 
@@ -55,6 +58,9 @@ if [ ! -d "$DST_CLASSIFIER" ]; then
             fi
         done
     done
+    ros2 launch traffic_light_classifier traffic_light_classifier.launch.xml \
+    model_path:="$DST_CLASSIFIER" \
+    build_only:=true
 fi
 if [ ! -d "$DST_DETECTOR" ]; then
     echo "$DST_DETECTOR"
@@ -66,6 +72,9 @@ if [ ! -d "$DST_DETECTOR" ]; then
             fi
         done
     done
+    ros2 launch traffic_light_fine_detector traffic_light_fine_detector.launch.xml \
+    model_path:="$DST_DETECTOR" \
+    build_only:=true
 fi
 
 if [ ! -d "$SRC_LIDAR/.git" ]; then
@@ -84,7 +93,11 @@ if [ ! -d "$DST_LIDAR" ]; then
             fi
         done
     done
+    ros2 launch autoware_lidar_centerpoint lidar_centerpoint.launch.xml \
+    model_path:="$DST_LIDAR" \
+    build_only:=true
 fi
+
 if [ ! -d "$SRC_CONTENTS/.git" ]; then
     echo "$SRC_CONTENTS"
     cd "$WORKDIR"

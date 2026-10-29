@@ -5,7 +5,6 @@ source /opt/ros/jazzy/setup.bash
 source /opt/autoware/setup.bash
 
 /shared/autoware/EntryPoint_Download.sh 2>&1 | tee /shared/autoware/EntryPoint_Download.log.txt
-exit
 
 # これはCUDAのエラー箇所を正確に特定するためのデバッグ用設定ですが、
 # GPUの処理を同期（同期待ち）させるため、動作が非常に重くなり、
@@ -40,6 +39,7 @@ for i in range(1, max_attempts + 1):
 else:
     print(f'\nFailed to connect after {max_attempts} attempts.')
 "
+
 ros2 launch autoware_launch e2e_simulator.launch.xml \
     map_path:=${AUTOWARE_DATA_PATH}/maps/${TOWN_NAME} \
     data_path:=${AUTOWARE_DATA_PATH}/ml_models \
