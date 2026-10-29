@@ -1,7 +1,9 @@
 #!/bin/bash
 set -e
-MAP_DEST="/root/autoware_data/maps"
-ML_DEST="/root/autoware_data/ml_models"
+MAP_DEST="${AUTOWARE_DATA_PATH}/maps"
+ML_DEST="${AUTOWARE_DATA_PATH}/ml_models"
+mkdir -p "$MAP_DEST"
+mkdir -p "$ML_DEST"
 
 WORKDIR="/tmp/autoware_setup"
 mkdir -p "$WORKDIR"
@@ -26,6 +28,8 @@ else
         -e data_dir="$ML_ORIGIN"
     cp -r "$ML_ORIGIN/traffic_light_classifier" "$ML_DEST/"
     cp -r "$ML_ORIGIN/traffic_light_fine_detector" "$ML_DEST/"
+    chown -R ${HOST_UID}:${HOST_GID} "$ML_DEST/traffic_light_classifier"
+    chown -R ${HOST_UID}:${HOST_GID} "$ML_DEST/traffic_light_fine_detector"
 fi
 cd "$ML_DEST"
 if [ -d "lidar_centerpoint/.git" ]; then
@@ -34,6 +38,7 @@ else
     git lfs install
     LIDAR_URL="https://huggingface.co/AutowareFoundation/lidar_centerpoint"
     git clone "$LIDAR_URL" -b v3.0
+    chown -R ${HOST_UID}:${HOST_GID} "$ML_DEST/lidar_centerpoint"
 fi
 
 cd "$WORKDIR"
@@ -52,6 +57,7 @@ else
             rm -rf "${TOWN_DIR}"
         fi
         mkdir -p "${TOWN_DIR}"
+        chown -R ${HOST_UID}:${HOST_GID} "${TOWN_DIR}"
         cp "$file" "${TOWN_DIR}/pointcloud_map.pcd"
         cp "$INFO_YAML_PATH" "${TOWN_DIR}/${INFO_YAML_NAME}"
     done

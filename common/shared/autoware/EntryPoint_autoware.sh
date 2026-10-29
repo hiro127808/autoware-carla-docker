@@ -40,8 +40,8 @@ else:
     print(f'\nFailed to connect after {max_attempts} attempts.')
 "
 ros2 launch autoware_launch e2e_simulator.launch.xml \
-    map_path:=/tmp/autoware_data/maps/${TOWN_NAME} \
-    data_path:=/tmp/autoware_data/ml_models \
+    map_path:=${AUTOWARE_DATA_PATH}/maps/${TOWN_NAME} \
+    data_path:=${AUTOWARE_DATA_PATH}/ml_models \
     vehicle_model:=sample_vehicle \
     sensor_model:=carla_sensor_kit \
     simulator_type:=carla \

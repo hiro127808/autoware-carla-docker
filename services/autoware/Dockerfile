@@ -1,5 +1,8 @@
 FROM ghcr.io/autowarefoundation/autoware:universe-devel-cuda-jazzy-20260929
 
+ARG UID=1000
+ARG GID=1000
+
 RUN apt-get update && apt-get install -y \
     vim \
     python3-pip \
@@ -13,9 +16,15 @@ RUN apt-get update && apt-get install -y \
     ansible \
     && rm -rf /var/lib/apt/lists/*
 
-RUN python3 -m venv /opt/venv
+RUN python3 -m venv /opt/venv && \
+    chown -R ${UID}:${GID} /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
 
+RUN mkdir -p ${AUTOWARE_DATA_PATH} && \
+    chown -R ${UID}:${GID} ${AUTOWARE_DATA_PATH}
+
+USER ${UID}:${GID}
+    
 RUN python3 -m pip install --upgrade pip setuptools wheel \
  && python3 -m pip install --no-cache-dir \
     "carla==0.9.16" \
