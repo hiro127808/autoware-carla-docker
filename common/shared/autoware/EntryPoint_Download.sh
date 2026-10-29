@@ -58,9 +58,6 @@ if [ ! -d "$DST_CLASSIFIER" ]; then
             fi
         done
     done
-    ros2 launch traffic_light_classifier traffic_light_classifier.launch.xml \
-    model_path:="$DST_CLASSIFIER" \
-    build_only:=true
 fi
 if [ ! -d "$DST_DETECTOR" ]; then
     echo "$DST_DETECTOR"
@@ -72,9 +69,6 @@ if [ ! -d "$DST_DETECTOR" ]; then
             fi
         done
     done
-    ros2 launch traffic_light_fine_detector traffic_light_fine_detector.launch.xml \
-    model_path:="$DST_DETECTOR" \
-    build_only:=true
 fi
 
 if [ ! -d "$SRC_LIDAR/.git" ]; then
