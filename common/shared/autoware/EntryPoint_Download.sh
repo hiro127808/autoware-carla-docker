@@ -28,56 +28,52 @@ SRC_AUTOWARE="$WORKDIR"/autoware
 mkdir -p "$ML_ORIGIN"
 mkdir -p "$WORKDIR"
 
-cd "$WORKDIR"
-INFO_YAML_NAME=map_projector_info.yaml
-cat << 'EOF' > $INFO_YAML_NAME
-projector_type: Local
-EOF
-INFO_YAML_PATH="$WORKDIR"/$INFO_YAML_NAME
-
-if [ ! -d "$SRC_AUTOWARE/.git" ]; then
-    echo "$SRC_AUTOWARE"
-    cd "$WORKDIR"
-    git clone "$AUTOWARE_URL" "$SRC_AUTOWARE"
-    cd "$SRC_AUTOWARE"
-    ansible-galaxy collection install -f -r ansible-galaxy-requirements.yaml
-    ansible-playbook ansible/playbooks/install_dev_env.yaml \
-        --tags $ANSIBLE_TAGS \
-        --skip-tags $ANSIBLE_SKIP_TAGS \
-        -e data_dir="$ML_ORIGIN"
+if [[ ! -d "$DST_CLASSIFIER" || ! -d "$DST_DETECTOR" ]]; then
+    if [ ! -d "$SRC_AUTOWARE/.git" ]; then
+        echo "$SRC_AUTOWARE"
+        git clone "$AUTOWARE_URL" "$SRC_AUTOWARE"
+        cd "$SRC_AUTOWARE"
+        ansible-galaxy collection install -f -r ansible-galaxy-requirements.yaml
+        ansible-playbook ansible/playbooks/install_dev_env.yaml \
+            --tags $ANSIBLE_TAGS \
+            --skip-tags $ANSIBLE_SKIP_TAGS \
+            -e data_dir="$ML_ORIGIN"
+    else
+        echo "autoware repository already exists. Skipping clone. & ansible-playbook."
+    fi
+    if [ ! -d "$DST_CLASSIFIER" ]; then
+        echo "$DST_CLASSIFIER"
+        mkdir -p "$DST_CLASSIFIER"
+        for ext in $CP_EXTENSIONS; do
+            for file in "$SRC_CLASSIFIER"/*."$ext"; do
+                if [ -f "$file" ]; then
+                    cp "$file" "$DST_CLASSIFIER"/
+                fi
+            done
+        done
+    fi
+    if [ ! -d "$DST_DETECTOR" ]; then
+        echo "$DST_DETECTOR"
+        mkdir -p "$DST_DETECTOR"
+        for ext in $CP_EXTENSIONS; do
+            for file in "$SRC_DETECTOR"/*."$ext"; do
+                if [ -f "$file" ]; then
+                    cp "$file" "$DST_DETECTOR"/
+                fi
+            done
+        done
+    fi
 else
-    echo "autoware repository already exists. Skipping clone. & ansible-playbook."
-fi
-if [ ! -d "$DST_CLASSIFIER" ]; then
-    echo "$DST_CLASSIFIER"
-    mkdir -p "$DST_CLASSIFIER"
-    for ext in $CP_EXTENSIONS; do
-        for file in "$SRC_CLASSIFIER"/*."$ext"; do
-            if [ -f "$file" ]; then
-                cp "$file" "$DST_CLASSIFIER"/
-            fi
-        done
-    done
-fi
-if [ ! -d "$DST_DETECTOR" ]; then
-    echo "$DST_DETECTOR"
-    mkdir -p "$DST_DETECTOR"
-    for ext in $CP_EXTENSIONS; do
-        for file in "$SRC_DETECTOR"/*."$ext"; do
-            if [ -f "$file" ]; then
-                cp "$file" "$DST_DETECTOR"/
-            fi
-        done
-    done
+    echo "traffic_light_classifier and traffic_light_fine_detector already exist. Skipping copy."
 fi
 
-if [ ! -d "$SRC_LIDAR/.git" ]; then
-    echo "$SRC_LIDAR"
-    git clone "$LIDAR_URL" -b $LIDAR_VERSION "$SRC_LIDAR"
-else
-    echo "lidar_centerpoint repository already exists. Skipping clone."
-fi
 if [ ! -d "$DST_LIDAR" ]; then
+    if [ ! -d "$SRC_LIDAR/.git" ]; then
+        echo "$SRC_LIDAR"
+        git clone "$LIDAR_URL" -b $LIDAR_VERSION "$SRC_LIDAR"
+    else
+        echo "lidar_centerpoint repository already exists. Skipping clone."
+    fi
     echo "$DST_LIDAR"
     mkdir -p "$DST_LIDAR"
     for ext in $CP_EXTENSIONS; do
@@ -87,34 +83,50 @@ if [ ! -d "$DST_LIDAR" ]; then
             fi
         done
     done
+else
+    echo "lidar_centerpoint already exists. Skipping copy."
 fi
 
-if [ ! -d "$SRC_CONTENTS/.git" ]; then
-    echo "$SRC_CONTENTS"
+if ! (
+    shopt -s nullglob
+    files=("$MAP_DEST"/Town*)
+    (( ${#files[@]} > 0 ))
+); then
     cd "$WORKDIR"
-    git clone "$CONTENTS_URL" "$SRC_CONTENTS"
-else
-    echo "autoware-contents repository already exists. Skipping clone."
-fi
-cd "$PCD_DIR"
-for file in *; do
-    if [ -d "$file" ] || [ "$file" = "README.md" ]; then
-        continue
-    fi
-    filename_no_ext="${file%.*}"
-    TOWN_DIR="${MAP_DEST}/${filename_no_ext}"
-        if [ ! -d "${TOWN_DIR}" ]; then
-        echo "${TOWN_DIR} copying..."
-        mkdir -p "${TOWN_DIR}"
-        cp "$file" "${TOWN_DIR}/pointcloud_map.pcd"
-        cp "$INFO_YAML_PATH" "${TOWN_DIR}/${INFO_YAML_NAME}"
-        OSM_PATH="${OSM_DIR}/${filename_no_ext}.osm"
-        cp "$OSM_PATH" "${TOWN_DIR}/lanelet2_map.osm"
-        echo "${TOWN_DIR} copy done."
+    INFO_YAML_NAME=map_projector_info.yaml
+cat << 'EOF' > $INFO_YAML_NAME
+projector_type: Local
+EOF
+    INFO_YAML_PATH="$WORKDIR"/$INFO_YAML_NAME
+
+    if [ ! -d "$SRC_CONTENTS/.git" ]; then
+        echo "$SRC_CONTENTS"
+        git clone "$CONTENTS_URL" "$SRC_CONTENTS"
     else
-        echo "${TOWN_DIR} already exists. Skipping copy."
+        echo "autoware-contents repository already exists. Skipping clone."
     fi
-done
+    cd "$PCD_DIR"
+    for file in *; do
+        if [ -d "$file" ] || [ "$file" = "README.md" ]; then
+            continue
+        fi
+        filename_no_ext="${file%.*}"
+        TOWN_DIR="${MAP_DEST}/${filename_no_ext}"
+        if [ ! -d "${TOWN_DIR}" ]; then
+            echo "${TOWN_DIR} copying..."
+            mkdir -p "${TOWN_DIR}"
+            cp "$file" "${TOWN_DIR}/pointcloud_map.pcd"
+            cp "$INFO_YAML_PATH" "${TOWN_DIR}/${INFO_YAML_NAME}"
+            OSM_PATH="${OSM_DIR}/${filename_no_ext}.osm"
+            cp "$OSM_PATH" "${TOWN_DIR}/lanelet2_map.osm"
+            echo "${TOWN_DIR} copy done."
+        else
+            echo "${TOWN_DIR} already exists. Skipping copy."
+        fi
+    done
+else
+    echo "Point cloud maps already exist. Skipping copy."    
+fi
 # aw is autoware user in the container.
 # This is to avoid permission issues when running Autoware in the container.
 chown -R aw:aw "${AUTOWARE_DATA_PATH}/."
