@@ -20,6 +20,8 @@ SRC_DETECTOR="$ML_ORIGIN/traffic_light_fine_detector"
 DST_DETECTOR="$ML_DEST/traffic_light_fine_detector"
 SRC_LIDAR="$WORKDIR/lidar_centerpoint"
 DST_LIDAR="$ML_DEST/lidar_centerpoint"
+SRC_CONTENTS="$WORKDIR/autoware-contents"
+SRC_AUTOWARE="$WORKDIR/autoware"
 mkdir -p "$ML_ORIGIN"
 mkdir -p "$WORKDIR"
 
@@ -30,11 +32,11 @@ projector_type: Local
 EOF
 INFO_YAML_PATH="$WORKDIR"/$INFO_YAML_NAME
 
-if [ ! -d "$WORKDIR/autoware/.git" ]; then
-    echo "autoware repository clone. & ansible-playbook."
+if [ ! -d "$SRC_AUTOWARE/.git" ]; then
+    echo "$SRC_AUTOWARE"
     cd "$WORKDIR"
-    git clone "$AUTOWARE_URL"
-    cd "$WORKDIR/autoware"
+    git clone "$AUTOWARE_URL" "$SRC_AUTOWARE"
+    cd "$SRC_AUTOWARE"
     ansible-galaxy collection install -f -r ansible-galaxy-requirements.yaml
     ansible-playbook ansible/playbooks/install_dev_env.yaml \
         --tags $ANSIBLE_TAGS \
@@ -44,34 +46,49 @@ else
     echo "autoware repository already exists. Skipping clone. & ansible-playbook."
 fi
 if [ ! -d "$DST_CLASSIFIER" ]; then
+    echo "$DST_CLASSIFIER"
     mkdir -p "$DST_CLASSIFIER"
     for ext in $CP_EXTENSIONS; do
-        cp "$SRC_CLASSIFIER"/*."$ext" "$DST_CLASSIFIER"/
+        for file in "$SRC_CLASSIFIER"/*."$ext"; do
+            if [ -f "$file" ]; then
+                cp "$file" "$DST_CLASSIFIER"/
+            fi
+        done
     done
 fi
 if [ ! -d "$DST_DETECTOR" ]; then
+    echo "$DST_DETECTOR"
     mkdir -p "$DST_DETECTOR"
     for ext in $CP_EXTENSIONS; do
-        cp "$SRC_DETECTOR"/*."$ext" "$DST_DETECTOR"/
+        for file in "$SRC_DETECTOR"/*."$ext"; do
+            if [ -f "$file" ]; then
+                cp "$file" "$DST_DETECTOR"/
+            fi
+        done
     done
 fi
 
-if [ ! -d "$WORKDIR/lidar_centerpoint/.git" ]; then
-    cd "$WORKDIR"
+if [ ! -d "$SRC_LIDAR/.git" ]; then
+    echo "$SRC_LIDAR"
     git clone "$LIDAR_URL" -b $LIDAR_VERSION "$SRC_LIDAR"
 else
     echo "lidar_centerpoint repository already exists. Skipping clone."
 fi
 if [ ! -d "$DST_LIDAR" ]; then
+    echo "$DST_LIDAR"
     mkdir -p "$DST_LIDAR"
     for ext in $CP_EXTENSIONS; do
-        cp "$SRC_LIDAR"/*."$ext" "$DST_LIDAR"/
+        for file in "$SRC_LIDAR"/*."$ext"; do
+            if [ -f "$file" ]; then
+                cp "$file" "$DST_LIDAR"/
+            fi
+        done
     done
 fi
-if [ ! -d "$WORKDIR/autoware-contents/.git" ]; then
-    echo "autoware-contents repository clone."
+if [ ! -d "$SRC_CONTENTS/.git" ]; then
+    echo "$SRC_CONTENTS"
     cd "$WORKDIR"
-    git clone "$CONTENTS_URL"
+    git clone "$CONTENTS_URL" "$SRC_CONTENTS"
 else
     echo "autoware-contents repository already exists. Skipping clone."
 fi

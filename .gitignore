@@ -1,4 +1,4 @@
-common/shared/autoware/autoware_launch.log.txt
+common/shared/autoware/*.log.txt
 common/shared/PythonAPI/carla/agents/
 common/autoware_data/ml_models/
 common/autoware_data/maps/

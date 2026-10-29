@@ -4,7 +4,8 @@ source /opt/venv/bin/activate
 source /opt/ros/jazzy/setup.bash
 source /opt/autoware/setup.bash
 
-/shared/autoware/EntryPoint_Download.sh
+/shared/autoware/EntryPoint_Download.sh 2>&1 | tee /shared/autoware/EntryPoint_Download.log.txt
+exit
 
 # これはCUDAのエラー箇所を正確に特定するためのデバッグ用設定ですが、
 # GPUの処理を同期（同期待ち）させるため、動作が非常に重くなり、
