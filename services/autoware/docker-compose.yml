@@ -20,8 +20,10 @@ services:
       - LD_LIBRARY_PATH=/usr/local/cuda/lib64:/usr/lib/x86_64-linux-gnu:$LD_LIBRARY_PATH
       - CUTILS_LOGGING_SEVERITY=DEBUG
       - CUDA_LAUNCH_BLOCKING=1
-      - AUTOWARE_DATA_PATH=${AUTOWARE_DATA_PATH:-/tmp/autoware_data}
+      - AUTOWARE_DATA_PATH=${AUTOWARE_DATA_PATH:-/root/autoware_data}
       - HOST_UID=${HOST_UID:-1000}
       - HOST_GID=${HOST_GID:-1000}
 
+    volumes:
+      - ../../common/autoware_data:${AUTOWARE_DATA_PATH:-/root/autoware_data}
     command: ["bash"]
